@@ -8,11 +8,12 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-Run the scripts completed so far:
+Run the completed scripts from the project root:
 
 ```bash
 python generate_data.py
 python part_a_clean_eda.py
+python part_b_regression.py
 ```
 
 ## Data findings
@@ -36,6 +37,18 @@ Generated outputs:
 - `outputs/part_a_correlations.csv`
 
 ## Model results (regression)
+
+Five approaches were evaluated: a mean baseline, Linear Regression, Decision Tree, Random Forest, and Gradient Boosting.
+
+- **Baseline:** The validation R² was -0.0212. A constant prediction using the training mean explains almost none of the variation in delivery hours. The slightly negative value occurs because the training mean differs from the validation mean.
+- **Best validation model:** Linear Regression achieved an RMSE of 4.8912 hours and an R² of 0.9313.
+- **Tree depth:** Depth 1 had high bias (train RMSE 11.6334, validation RMSE 12.1324), with both errors high and a small gap. The unlimited tree had high variance (train RMSE 0.0000, validation RMSE 7.7890), showing a large generalization gap. Depth 6 gave the lowest validation RMSE of 6.2796 hours.
+- **Learning rate:** A learning rate of 0.1 performed best (R² = 0.9306). At 0.01, R² was 0.7127 because learning was too slow and the model underfit. At 1.0, R² was 0.8440 because the large updates reduced generalization performance.
+- **Cross-validation:** Gradient Boosting achieved a mean R² of 0.9352 (std 0.0044), compared with Linear Regression's 0.9261 (std 0.0048).
+
+The validation RMSE difference between Linear Regression (4.8912) and Gradient Boosting (4.9165) was small. Although Linear Regression wins under the brief's validation-RMSE selection rule, Gradient Boosting performs better across the five cross-validation folds. I would favour Gradient Boosting for deployment because its cross-validation result provides stronger evidence of generalization across different data splits. It is more complex and less interpretable than Linear Regression, so this choice trades simplicity for the ability to capture nonlinear relationships and feature interactions.
+
+The capstone's validation-based final model was Linear Regression. It achieved a test RMSE of 4.5235 hours and an R² of 0.9493. Gradient Boosting was not evaluated on the test set, so its test performance cannot be compared directly.
 
 ## Model results (classification)
 
